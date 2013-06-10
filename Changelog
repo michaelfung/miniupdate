@@ -1,0 +1,53 @@
+2011-01-03
+----------
+  v.0.8
+  * fix wrong syslog call syntax in misc.c
+  * add the option to run a program whenever IP changes
+
+2009-01-21
+----------
+  v.0.7
+  * switch to use GNU Autotools
+  * fix presence of required argument not checked
+
+2006-06-01
+------------
+  v0.6
+  * fix socket descriptor not closed bug in getifaddr.c
+  * add more verbose logging in main.c and getifaddr.c
+
+
+2006-05-22
+------------
+  v0.5
+  * revert to not terminate on ioctl error
+
+
+2006-05-18
+------------
+  v0.4
+  * fix potential memory leak in getifaddr.c
+
+
+2006-05-15
+------------
+  v0.3
+  * fix fopen error check bug
+  * fix '-h' option fails if already running in daemon mode
+  * fix backoffinterval setup bug when update_error_count = 10
+  * added support for 'no_public_ip' and 'interface' parameters
+  * improve the Makefile
+
+
+2006-05-05
+------------
+  v0.2
+  * add option -a to skip IP detection in non daemon mode.
+  
+  
+2006-05-01
+------------
+  v0.1	
+  * initial release
+  
+  

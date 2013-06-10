@@ -1,0 +1,50 @@
+diff -r -u --exclude=miniupdate.conf ../miniupdate-0.7/getifaddr.c ./getifaddr.c
+--- ../miniupdate-0.7/getifaddr.c	2009-11-04 11:26:19.000000000 +0200
++++ ./getifaddr.c	2010-12-04 12:58:31.000000000 +0200
+@@ -51,10 +51,11 @@
+ 
+ 	ifr = ifc.ifc_req;
+ 	for (n = 0; n < ifc.ifc_len; n += sizeof(struct ifreq)) {
++          if (ifr->ifr_addr.sa_family==AF_INET) {
++	    ia = &((struct sockaddr_in *) &ifr->ifr_addr)->sin_addr;
++	    //ia= (struct in_addr *) ((ifr->ifr_ifru.ifru_addr.sa_data)+2);
+ 
+-		ia= (struct in_addr *) ((ifr->ifr_ifru.ifru_addr.sa_data)+2);
+-
+-		if ((tick = strcmp(ifr->ifr_ifrn.ifrn_name, ifname)) == 0) {
++		if ((tick = strcmp(ifr->ifr_name /*for linux: ifr_ifrn.ifrn_name*/, ifname)) == 0) {
+ 			tmpip = inet_ntoa(*ia);
+ 			if (log_verbose) {
+ 				sprintf(msg, "getifaddr: IP of %s:%s", ifname, tmpip);
+@@ -68,8 +69,9 @@
+ 			}
+ 			break;
+ 		}
+-
+-		ifr++;
++	  }
++	  // buggy: ifr++;
++	  ifr = (struct ifreq *)(((char *)ifr) + _SIZEOF_ADDR_IFREQ(*ifr));
+ 	}
+ 
+ 	free(ifc.ifc_buf);
+@@ -80,6 +82,5 @@
+ 	} else {
+ 		return(-1);
+ 	}
+-
+ }
+ 
+diff -r -u --exclude=miniupdate.conf ../miniupdate-0.7/miniupdate.h ./miniupdate.h
+--- ../miniupdate-0.7/miniupdate.h	2009-11-04 11:21:38.000000000 +0200
++++ ./miniupdate.h	2010-12-04 11:29:46.000000000 +0200
+@@ -63,7 +63,8 @@
+ #define DEFAULT_NET_RETRY_PERIOD		3600
+ #define DEFAULT_MAX_INTERVAL			86400
+ #define DEFAULT_CONF_FILE				"/etc/miniupdate.conf"
+-#define DEFAULT_PID_FILE 				"/var/run/miniupdate.pid"
++/*#define DEFAULT_PID_FILE 				"/var/run/miniupdate.pid"*/
++#define DEFAULT_PID_FILE 				"/tmp/miniupdate.pid"
+ #define DEFAULT_LOG_FILE				"/var/log/miniupdate.log"
+ #define DEFAULT_NO_PUBLIC_IP			0
+ #define DEFAULT_LOG_VERBOSE				0

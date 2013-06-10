@@ -1,0 +1,53 @@
+Building from source
+====================
+
+$ ./configure --prefix=/usr --sysconfdir=/etc
+
+$ make
+
+$ su
+
+# make install
+
+The script "miniupdate-redhat.init" is provided for SysV style init (Redhat, Fedora...), while "miniupdate-debian.init" is for debian style.  
+
+
+Mac OS X patch
+==============
+If you are using Mac OS X ,you may need to apply the macosx.patch file:
+
+$ patch < macosx.patch
+
+Thanks to Holger Assenmacher for the patch for 10.5.0.
+ 
+
+Configuration
+=============
+
+Edit "/etc/miniupdate.conf" to your needs.
+
+Run "/usr/sbin/miniupdate -v" to check for errors.
+
+Modify the init scripts to your situation. Like program path...etc. 
+
+Run miniupdate using the init scripts.
+
+
+Firewall Setting
+================
+If miniupdate is run behind a firewall, you must allow it to send outgoing packets to 9120/tcp 
+and 9121/udp.
+
+
+Feature
+=======
+miniupdate monitors the IP address of your external interface, and update the DNS record if the 
+address changed. It also supports the "behind a router" situation: it can sense the IP 
+address of the router's external interface by sending a udp request to the myip server 
+of minidns.net.
+ 
+
+Techincal Support and Bug reports
+=================================
+Please visit http://www.minidns.net/ or email support@minidns.net.
+

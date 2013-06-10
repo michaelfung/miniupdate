@@ -1,0 +1,80 @@
+#! /bin/bash
+#
+# chkconfig: 2345 50 50
+# description: miniDNS.net Dynamic DNS Updater
+# processname: miniupdate
+# config: /etc/miniupdate.conf
+# pidfile: /var/run/miniupdate.pid
+
+# Source function library.
+. /etc/init.d/functions
+
+RETVAL=0
+
+prog="miniupdate"
+progdir="/usr/sbin"
+conf="/etc/miniupdate.conf"
+
+# Source configuration
+#if [ -f /etc/sysconfig/$prog ] ; then
+#	. /etc/sysconfig/$prog
+#fi
+
+start() {
+if [ ! -f /var/lock/subsys/miniupdate ]; then
+	echo -n $"Starting $prog: "
+	daemon $progdir/$prog -d -c $conf
+	RETVAL=$?
+	echo
+	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/miniupdate
+	return $RETVAL
+fi
+return $RETVAL
+}
+
+stop() {
+	echo -n $"Stopping $prog: "
+	# Would be better to send QUIT first, then killproc if that fails
+	killproc $prog
+	RETVAL=$?
+	echo
+	if [ ! -f /var/run/miniupdate.pid ]; then
+		rm -f /var/lock/subsys/miniupdate		
+		return 0
+	else
+		return $RETVAL
+	fi
+}
+
+#rhstatus() {
+#	status miniupdate
+#}
+
+restart() {
+	stop
+	start
+}
+
+
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  restart)
+	restart
+	;;
+#  status)
+#	rhstatus
+#	;;
+  condrestart)
+	[ -f /var/lock/subsys/miniupdate ] && restart || :
+	;;
+  *)
+	echo $"Usage: $0 {start|stop|restart|condrestart}"
+	exit 1
+esac
+
+exit $?
